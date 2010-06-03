@@ -6,4 +6,6 @@ repository 'http://github.com/bestpractical/jifty-plugin-authentication-twitter'
 
 requires('Jifty');
 
+install_share;
 WriteAll;
+
