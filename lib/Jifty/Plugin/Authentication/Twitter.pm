@@ -18,7 +18,10 @@ It adds the column C<twitter_name> to your User model.
 =head1 SYNOPSIS
 
 First you must tell Twitter about your application at
-L<http://twitter.com/oauth_clients>. After that, add this plugin, filling in
+L<http://twitter.com/oauth_clients>. Make sure that the Callback URL is set to
+C<http://your.app/twitter/callback>.
+
+After that, add this plugin, filling in
 the consumer key and consumer secret fields in your F<etc/config.yml> under the
 C<framework> section:
 
