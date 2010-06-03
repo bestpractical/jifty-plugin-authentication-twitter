@@ -51,6 +51,9 @@ our %CONFIG = ( );
 sub init {
     my $self = shift;
     %CONFIG  = @_;
+
+    exists $CONFIG{consumer_key} && exists $CONFIG{consumer_secret}
+        or die "The Authentication::Twitter plugin requires consumer_key and consumer_secret!\n";
 }
 
 =head1 AUTHOR
