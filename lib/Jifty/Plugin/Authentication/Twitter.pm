@@ -2,7 +2,7 @@ use strict;
 use warnings;
 
 package Jifty::Plugin::Authentication::Twitter;
-use base qw/Jifty::Plugin/;
+use base qw/Jifty::Plugin::Authentication::OAuth/;
 
 our $VERSION = '0.01';
 
