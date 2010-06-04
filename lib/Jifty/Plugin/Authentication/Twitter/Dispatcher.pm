@@ -4,6 +4,7 @@ use warnings;
 package Jifty::Plugin::Authentication::Twitter::Dispatcher;
 use Jifty::Dispatcher -base;
 use Net::OAuth;
+use HTTP::Request::Common ();
 
 =head1 NAME
 
@@ -43,6 +44,18 @@ on '/twitter/login' => run {
         timestamp        => time,
         nonce            => $$ * rand,
     );
+    $request_token_request->sign;
+
+    my $ua = LWP::UserAgent->new;
+
+    my $res = $ua->request(HTTP::Request::Common::POST $request_token_request->to_url);
+    if (!$res->is_success) {
+        die "Something went wrong";
+    }
+
+    my $response = Net::OAuth->response('request token')->from_post_body($res->content);
+    # $response->token;
+    # $response->token_secret;
 };
 
 1;
