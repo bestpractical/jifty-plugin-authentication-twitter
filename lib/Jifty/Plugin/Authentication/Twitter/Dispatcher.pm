@@ -3,6 +3,7 @@ use warnings;
 
 package Jifty::Plugin::Authentication::Twitter::Dispatcher;
 use Jifty::Dispatcher -base;
+use Net::OAuth;
 
 =head1 NAME
 
@@ -29,6 +30,19 @@ before qr'^/twitter/callback' => run {
     else {
         redirect '/';
     }
+};
+
+on '/twitter/login' => run {
+    my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
+    my $request_token_request = Net::OAuth->request("request token")->new(
+        consumer_key     => $plugin->consumer_key,
+        consumer_secret  => $plugin->consumer_secret,
+        request_url      => 'http://twitter.com/oauth/request_token',
+        request_method   => 'POST',
+        signature_method => 'HMAC-SHA1',
+        timestamp        => time,
+        nonce            => $$ * rand,
+    );
 };
 
 1;
