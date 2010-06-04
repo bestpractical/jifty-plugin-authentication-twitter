@@ -21,7 +21,7 @@ Handles the login callback. You probably don't need to worry about this.
 
 =cut
 
-before qr'^/twitter/callback' => run {
+before '/twitter/callback' => run {
     # add action
 
     if ( Jifty->web->request->continuation ) {
