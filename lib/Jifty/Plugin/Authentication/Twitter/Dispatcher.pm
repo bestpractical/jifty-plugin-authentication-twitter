@@ -69,7 +69,17 @@ on '/twitter/login' => run {
         nonce            => $$ * rand,
     );
 
-    Jifty->web->_redirect($auth_request->to_url('http://twitter.com/oauth/authenticate'));
+    my $url = $auth_request->to_url('http://twitter.com/oauth/authenticate');
+
+    Jifty->handler->buffer->clear;
+    my $web_response = Jifty->web->response;
+    $web_response->header( Location => $url );
+    $web_response->status( 302 );
+
+    # cookie has to be sent or returning from continuations breaks
+    Jifty->web->session->set_cookie;
+
+    Jifty::Dispatcher::_abort();
 };
 
 1;
