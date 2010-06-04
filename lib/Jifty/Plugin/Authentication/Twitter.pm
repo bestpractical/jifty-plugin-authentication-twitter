@@ -42,17 +42,17 @@ and L<Jifty::Plugin::Authentication::Twitter::Dispatcher> for the URLs handled.
 
 =cut
 
-our %CONFIG = ( );
-
 =head2 init
+
+Confirm that we have a consumer key and consumer secret
 
 =cut
 
 sub init {
     my $self = shift;
-    %CONFIG  = @_;
+    $self->SUPER::init(@_);
 
-    exists $CONFIG{consumer_key} && exists $CONFIG{consumer_secret}
+    $self->consumer_key && $self->consumer_secret
         or die "The Authentication::Twitter plugin requires consumer_key and consumer_secret!\n";
 }
 
