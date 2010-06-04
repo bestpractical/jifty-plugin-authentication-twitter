@@ -4,6 +4,10 @@ use warnings;
 package Jifty::Plugin::Authentication::Twitter::Dispatcher;
 use Jifty::Dispatcher -base;
 use Net::OAuth;
+use Net::OAuth::RequestTokenRequest;
+use Net::OAuth::RequestTokenResponse;
+use Net::OAuth::UserAuthRequest;
+use Net::OAuth::UserAuthResponse;
 use HTTP::Request::Common ();
 
 =head1 NAME
@@ -35,11 +39,11 @@ before '/twitter/callback' => run {
 
 on '/twitter/login' => run {
     my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
-    my $request_token_request = Net::OAuth->request("request token")->new(
+    my $request_token_request = Net::OAuth::RequestTokenRequest->new(
         consumer_key     => $plugin->consumer_key,
         consumer_secret  => $plugin->consumer_secret,
-        request_url      => 'http://twitter.com/oauth/request_token',
         request_method   => 'POST',
+        request_url      => 'http://twitter.com/oauth/request_token',
         signature_method => 'HMAC-SHA1',
         timestamp        => time,
         nonce            => $$ * rand,
@@ -53,9 +57,19 @@ on '/twitter/login' => run {
         die "Something went wrong";
     }
 
-    my $response = Net::OAuth->response('request token')->from_post_body($res->content);
-    # $response->token;
-    # $response->token_secret;
+    my $response = Net::OAuth::RequestTokenResponse->from_post_body($res->content);
+
+    my $auth_request = Net::OAuth::UserAuthRequest->new(
+        consumer_key     => $plugin->consumer_key,
+        consumer_secret  => $plugin->consumer_secret,
+        token            => $response->token,
+        request_method   => 'POST',
+        signature_method => 'HMAC-SHA1',
+        timestamp        => time,
+        nonce            => $$ * rand,
+    );
+
+    Jifty->web->_redirect($auth_request->to_url('http://twitter.com/oauth/authenticate'));
 };
 
 1;
