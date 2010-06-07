@@ -26,15 +26,9 @@ Handles the login callback. You probably don't need to worry about this.
 
 =cut
 
-before '/twitter/callback' => run {
-    # add action
-
-    if ( Jifty->web->request->continuation ) {
-        Jifty->web->request->continuation->call;
-    }
-    else {
-        redirect '/';
-    }
+on '/twitter/callback' => run {
+    my $token = Jifty->web->request->argument('oauth_token');
+    my $secret = Jifty::CAS->key('twitter_oauth' => $token);
 };
 
 on '/twitter/login' => run {
@@ -58,6 +52,9 @@ on '/twitter/login' => run {
     }
 
     my $response = Net::OAuth::RequestTokenResponse->from_post_body($res->content);
+
+    # keep track of the token secret between requests
+    Jifty::CAS->publish('twitter_oauth' => $response->token, $response->token_secret);
 
     my $auth_request = Net::OAuth::UserAuthRequest->new(
         consumer_key     => $plugin->consumer_key,
