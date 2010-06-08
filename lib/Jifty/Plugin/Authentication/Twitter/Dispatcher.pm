@@ -72,14 +72,14 @@ on '/twitter/login' => run {
 
 on '/twitter/callback' => run {
     my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
-    my $token = Jifty->web->request->argument('oauth_token');
-    my $secret = Jifty::CAS->key('twitter_oauth' => $token);
+    my $request_token = Jifty->web->request->argument('oauth_token');
+    my $request_secret = Jifty::CAS->key('twitter_oauth' => $request_token);
 
     my $access_token_request = Net::OAuth::AccessTokenRequest->new(
         consumer_key     => $plugin->consumer_key,
         consumer_secret  => $plugin->consumer_secret,
-        token            => $token,
-        token_secret     => $secret,
+        token            => $request_token,
+        token_secret     => $request_secret,
         request_method   => 'POST',
         request_url      => 'http://twitter.com/oauth/access_token',
         signature_method => 'HMAC-SHA1',
@@ -96,7 +96,10 @@ on '/twitter/callback' => run {
     }
 
     my $response = Net::OAuth::AccessTokenResponse->from_post_body($res->content);
-
+    my $access_token = $response->token;
+    my $access_secret = $response->token_secret;
+    my $user_id = $response->extra_params->{user_id};
+    my $screen_name = $response->extra_params->{screen_name};
 };
 
 1;
