@@ -7,7 +7,7 @@ Jifty::Plugin::Authentication::Twitter::LoginViaTwitter
 
 =cut
 
-package Jifty::Plugin::Authentication::Twitter::LoginViaTwitter;
+package Jifty::Plugin::Authentication::Twitter::Action::LoginViaTwitter;
 use base qw/Jifty::Action/;
 
 =head2 take_action
