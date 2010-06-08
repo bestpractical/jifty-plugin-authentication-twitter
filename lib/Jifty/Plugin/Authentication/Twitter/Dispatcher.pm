@@ -18,18 +18,7 @@ Jifty::Plugin::Authentication::Twitter::Dispatcher - dispatcher for Twitter plug
 
 All the dispatcher rules jifty needs to support L<Jifty::Authentication::Twitter>
 
-=head1 RULES
-
-=head2 before '/twitter/callback'
-
-Handles the login callback. You probably don't need to worry about this.
-
 =cut
-
-on '/twitter/callback' => run {
-    my $token = Jifty->web->request->argument('oauth_token');
-    my $secret = Jifty::CAS->key('twitter_oauth' => $token);
-};
 
 on '/twitter/login' => run {
     my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
@@ -77,6 +66,11 @@ on '/twitter/login' => run {
     Jifty->web->session->set_cookie;
 
     Jifty::Dispatcher::_abort();
+};
+
+on '/twitter/callback' => run {
+    my $token = Jifty->web->request->argument('oauth_token');
+    my $secret = Jifty::CAS->key('twitter_oauth' => $token);
 };
 
 1;
