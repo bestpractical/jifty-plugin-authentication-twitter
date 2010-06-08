@@ -8,6 +8,8 @@ use Net::OAuth::RequestTokenRequest;
 use Net::OAuth::RequestTokenResponse;
 use Net::OAuth::UserAuthRequest;
 use Net::OAuth::UserAuthResponse;
+use Net::OAuth::AccessTokenRequest;
+use Net::OAuth::AccessTokenResponse;
 use HTTP::Request::Common ();
 
 =head1 NAME
@@ -69,8 +71,32 @@ on '/twitter/login' => run {
 };
 
 on '/twitter/callback' => run {
+    my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
     my $token = Jifty->web->request->argument('oauth_token');
     my $secret = Jifty::CAS->key('twitter_oauth' => $token);
+
+    my $access_token_request = Net::OAuth::AccessTokenRequest->new(
+        consumer_key     => $plugin->consumer_key,
+        consumer_secret  => $plugin->consumer_secret,
+        token            => $token,
+        token_secret     => $secret,
+        request_method   => 'POST',
+        request_url      => 'http://twitter.com/oauth/access_token',
+        signature_method => 'HMAC-SHA1',
+        timestamp        => time,
+        nonce            => $$ * rand,
+    );
+    $access_token_request->sign;
+
+    my $ua = LWP::UserAgent->new;
+
+    my $res = $ua->request(HTTP::Request::Common::POST $access_token_request->to_url);
+    if (!$res->is_success) {
+        die "Something went wrong";
+    }
+
+    my $response = Net::OAuth::AccessTokenResponse->from_post_body($res->content);
+
 };
 
 1;
