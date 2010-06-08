@@ -10,6 +10,21 @@ Jifty::Plugin::Authentication::Twitter::LoginViaTwitter
 package Jifty::Plugin::Authentication::Twitter::Action::LoginViaTwitter;
 use base qw/Jifty::Action/;
 
+use Jifty::Param::Schema;
+use Jifty::Action schema {
+    param access_token =>
+        is mandatory;
+
+    param access_secret =>
+        is mandatory;
+
+    param user_id =>
+        is mandatory;
+
+    param screenname =>
+        is mandatory;
+};
+
 =head2 take_action
 
 Logs into the linked account, creating it if it does not already exist.
