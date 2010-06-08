@@ -15,39 +15,36 @@ package Jifty::Plugin::Authentication::Twitter::Model::TwitterAccount;
 use Jifty::DBI::Schema;
 
 use Jifty::Record schema {
+    column user_id =>
+        is mandatory,
+        label is 'User',
+        is protected;
 
-column user_id =>
-  is mandatory,
-  label is 'User',
-  is protected;
+    column twitter_id =>
+        is mandatory,
+        is protected;
 
-column twitter_id =>
-  is mandatory,
-  is protected;
+    column screen_name =>
+        label is 'Twitter name',
+        default is '',
+        type is 'varchar';
 
-column screen_name =>
-  label is 'Twitter name',
-  default is '',
-  type is 'varchar';
+    column access_token =>
+        type is 'varchar';
+        label is 'OAuth access token',
+        is protected;
 
-column access_token =>
-  type is 'varchar';
-  label is 'OAuth access token',
-  is protected;
+    column access_secret =>
+        type is 'varchar';
+        label is 'OAuth access token secret',
+        is protected;
 
-column access_secret =>
-  type is 'varchar';
-  label is 'OAuth access token secret',
-  is protected;
-
-column created_on =>
-  type is 'date',
-  filters are 'Jifty::DBI::Filter::Date',
-  label is 'Created on',
-  since '0.2.69',
-  default is defer { DateTime->now },
-  is protected;
-
+    column created_on =>
+        type is 'date',
+        filters are 'Jifty::DBI::Filter::Date',
+        label is 'Created on',
+        default is defer { DateTime->now },
+        is protected;
 };
 
 =head2 current_user_can
@@ -65,6 +62,6 @@ sub current_user_can {
 
     return $self->current_user->is_superuser;
 }
-1;
 
+1;
 
