@@ -12,6 +12,8 @@ use Net::OAuth::AccessTokenRequest;
 use Net::OAuth::AccessTokenResponse;
 use HTTP::Request::Common ();
 
+$Net::OAuth::PROTOCOL_VERSION = Net::OAuth::PROTOCOL_VERSION_1_0A;
+
 =head1 NAME
 
 Jifty::Plugin::Authentication::Twitter::Dispatcher - dispatcher for Twitter plugin
@@ -24,9 +26,14 @@ All the dispatcher rules jifty needs to support L<Jifty::Authentication::Twitter
 
 on '/twitter/login' => run {
     my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
+    my $callback = Jifty->web->url(
+        path => '/twitter/callback',
+    );
+
     my $request_token_request = Net::OAuth::RequestTokenRequest->new(
         consumer_key     => $plugin->consumer_key,
         consumer_secret  => $plugin->consumer_secret,
+        callback         => $callback,
         request_method   => 'POST',
         request_url      => 'http://twitter.com/oauth/request_token',
         signature_method => 'HMAC-SHA1',
