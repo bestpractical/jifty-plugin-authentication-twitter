@@ -98,7 +98,7 @@ on '/twitter/callback' => run {
 
     my $response = Net::OAuth::AccessTokenResponse->from_post_body($res->content);
 
-    Jifty->web->new_action(
+    my $login = Jifty->web->new_action(
         class => 'LoginViaTwitter',
         moniker => 'login_via_twitter',
         arguments => {
@@ -108,6 +108,7 @@ on '/twitter/callback' => run {
             screen_name   => $response->extra_params->{screen_name},
         },
     );
+    $login->run;
 };
 
 1;
