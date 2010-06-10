@@ -98,10 +98,34 @@ on '/twitter/callback' => run {
 
     my $response = Net::OAuth::AccessTokenResponse->from_post_body($res->content);
 
-    # access_token  => $response->token,
-    # access_secret => $response->token_secret,
-    # user_id       => $response->extra_params->{user_id},
-    # screen_name   => $response->extra_params->{screen_name},
+    my $access_token  = $response->token;
+    my $access_secret = $response->token_secret;
+    my $twitter_id    = $response->extra_params->{user_id};
+    my $screen_name   = $response->extra_params->{screen_name};
+
+    my $twitter_account = Jifty::Plugin::Authentication::Twitter::Model::TwitterAccount->new(current_user => Jifty::CurrentUser->superuser);
+    $twitter_account->load(
+        twitter_id => $twitter_id,
+    );
+    my $user = Jifty->app_class('Model', 'User')->new;
+
+    if ($twitter_account->id) {
+        $user->load($twitter_account->user_id);
+        $user->screen_name($screen_name);
+    }
+    else {
+        $user->create(
+            name => $screen_name,
+        );
+        $twitter_account->create(
+            user_id       => $user->id,
+            twitter_id    => $twitter_id,
+            screen_name   => $screen_name,
+            access_token  => $access_token,
+            access_secret => $access_secret,
+        );
+    }
+
 };
 
 1;
