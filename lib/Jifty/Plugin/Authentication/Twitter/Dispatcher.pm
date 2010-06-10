@@ -111,7 +111,7 @@ on '/twitter/callback' => run {
 
     if ($twitter_account->id) {
         $user->load($twitter_account->user_id);
-        $twitter_account->screen_name($screen_name);
+        $twitter_account->set_screen_name($screen_name);
     }
     else {
         $user->create(
