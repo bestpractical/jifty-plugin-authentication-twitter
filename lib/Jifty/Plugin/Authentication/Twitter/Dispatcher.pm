@@ -107,7 +107,7 @@ on '/twitter/callback' => run {
     $twitter_account->load_by_cols(
         twitter_id => $twitter_id,
     );
-    my $user = Jifty->app_class('Model', 'User')->new;
+    my $user = Jifty->app_class('Model', 'User')->new(current_user => Jifty::CurrentUser->superuser);
 
     if ($twitter_account->id) {
         $user->load($twitter_account->user_id);
