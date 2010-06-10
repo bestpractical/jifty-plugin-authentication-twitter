@@ -131,6 +131,7 @@ on '/twitter/callback' => run {
         Jifty->web->current_user($current_user);
         Jifty->web->session->expires( undef );
         Jifty->web->session->set_cookie;
+        redirect '/';
     }
 };
 
