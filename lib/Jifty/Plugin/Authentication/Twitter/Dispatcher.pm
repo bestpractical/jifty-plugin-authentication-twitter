@@ -104,7 +104,7 @@ on '/twitter/callback' => run {
     my $screen_name   = $response->extra_params->{screen_name};
 
     my $twitter_account = Jifty::Plugin::Authentication::Twitter::Model::TwitterAccount->new(current_user => Jifty::CurrentUser->superuser);
-    $twitter_account->load(
+    $twitter_account->load_by_cols(
         twitter_id => $twitter_id,
     );
     my $user = Jifty->app_class('Model', 'User')->new;
