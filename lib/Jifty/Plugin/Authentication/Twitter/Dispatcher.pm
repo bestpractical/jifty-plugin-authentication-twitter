@@ -98,17 +98,10 @@ on '/twitter/callback' => run {
 
     my $response = Net::OAuth::AccessTokenResponse->from_post_body($res->content);
 
-    my $login = Jifty->web->new_action(
-        class => 'LoginViaTwitter',
-        moniker => 'login_via_twitter',
-        arguments => {
-            access_token  => $response->token,
-            access_secret => $response->token_secret,
-            user_id       => $response->extra_params->{user_id},
-            screen_name   => $response->extra_params->{screen_name},
-        },
-    );
-    $login->run;
+    # access_token  => $response->token,
+    # access_secret => $response->token_secret,
+    # user_id       => $response->extra_params->{user_id},
+    # screen_name   => $response->extra_params->{screen_name},
 };
 
 1;
