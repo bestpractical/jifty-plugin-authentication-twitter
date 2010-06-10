@@ -73,7 +73,8 @@ on '/twitter/login' => run {
 on '/twitter/callback' => run {
     my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
     my $request_token = Jifty->web->request->argument('oauth_token');
-    my $request_secret = Jifty::CAS->key('twitter_oauth' => $request_token);
+    my $cas_key = Jifty::CAS->key('twitter_oauth' => $request_token);
+    my $request_secret = Jifty::CAS->retrieve('twitter_oauth' => $cas_key)->content;
 
     my $access_token_request = Net::OAuth::AccessTokenRequest->new(
         consumer_key     => $plugin->consumer_key,
