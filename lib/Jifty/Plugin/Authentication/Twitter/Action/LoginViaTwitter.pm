@@ -21,7 +21,7 @@ use Jifty::Action schema {
     param user_id =>
         is mandatory;
 
-    param screenname =>
+    param screen_name =>
         is mandatory;
 };
 
