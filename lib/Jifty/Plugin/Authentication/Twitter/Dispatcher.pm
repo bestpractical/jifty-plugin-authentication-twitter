@@ -20,6 +20,11 @@ Jifty::Plugin::Authentication::Twitter::Dispatcher - dispatcher for Twitter plug
 
 All the dispatcher rules jifty needs to support L<Jifty::Authentication::Twitter>
 
+=head2 /twitter/login
+
+Talk to Twitter to get a request token, then redirect the user to Twitter so
+they can authorize it.
+
 =cut
 
 on '/twitter/login' => run {
@@ -69,6 +74,17 @@ on '/twitter/login' => run {
 
     Jifty::Dispatcher::_abort();
 };
+
+=head2 /twitter/callback
+
+Twitter redirects the user back here after they've authorized the request
+token. We have to talk to Twitter again to trade the request token for an
+access token, at which point Twitter also tells us which Twitter account the
+user is logged into.
+
+If all goes well we load or create the user's account.
+
+=cut
 
 on '/twitter/callback' => run {
     my ($plugin) = Jifty->find_plugin('Jifty::Plugin::Authentication::Twitter');
