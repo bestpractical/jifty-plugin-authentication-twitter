@@ -128,27 +128,22 @@ on '/twitter/callback' => run {
     if ($twitter_account->id) {
         $user->load($twitter_account->user_id);
         $twitter_account->set_screen_name($screen_name);
-    }
-    else {
-        $user->create(
-            name => $screen_name,
-        );
-        $twitter_account->create(
-            user_id       => $user->id,
-            twitter_id    => $twitter_id,
-            screen_name   => $screen_name,
-            access_token  => $access_token,
-            access_secret => $access_secret,
-        );
-    }
-
-    if ($user->id) {
         my $current_user = Jifty->app_class('CurrentUser')->new(id => $user->id);
         Jifty->web->current_user($current_user);
         Jifty->web->session->expires( undef );
         Jifty->web->session->set_cookie;
         redirect '/';
     }
+    else {
+        Jifty->web->session->set(twitter_id    => $twitter_id);
+        Jifty->web->session->set(screen_name   => $screen_name);
+        Jifty->web->session->set(access_token  => $access_token);
+        Jifty->web->session->set(access_secret => $access_secret);
+        redirect '/twitter/create';
+    }
+};
+
+on '/twitter/create' => run {
 };
 
 1;
